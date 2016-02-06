@@ -20,6 +20,9 @@
         <activity
             android:name=".ListStation">
         </activity>
+        <activity
+            android:name=".ViewStation">
+        </activity>
 
     </application>
 
