@@ -3,6 +3,7 @@ package tisspriet.meteoandroid;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -32,19 +33,16 @@ public class MainActivity extends Activity
 		textInfoStationsDate = (TextView)findViewById(R.id.textInfoStationDate);
 		textInfoStationsCondition = (TextView)findViewById(R.id.textInfoStationCondition);
 		textInfoStationsTendance = (TextView)findViewById(R.id.textInfoStationTendance);
-
-
-		Station alboussiere = new Station("Alboussière","Station d'altitude du pays de Crussol","44.9434","4.72924","547");
-		alboussiere.addMeasure(new Measure("2015-11-27 18:45:57",18,"Nuageux"));
-		alboussiere.addMeasure(new Measure("2015-11-27 18:46:57",19,"Nuageux"));
-		alboussiere.addMeasure(new Measure("2015-11-27 18:47:57", 10, "Nuageux"));
+		StationDAO myDao = new StationDAO(MainActivity.this, R.raw.stations, R.raw.measures);
+		Station alboussiere = myDao.getStation("Alboussière");
+		myDao.addReleveToStation(alboussiere);
 		textInfoStationsName.setText(alboussiere.getName());
 		textInfoStationsDescription.setText(alboussiere.getDescription());
 		textInfoStationsPosition.setText(alboussiere.gpsString());
 		textInfoStationsDate.setText(alboussiere.getLastMeasure().getDate());
-		textInfoStationsMeasure.setText(String.format("%f °C",alboussiere.getLastTemperature()));
+		textInfoStationsMeasure.setText(String.format("%f °C", alboussiere.getLastTemperature()));
 		textInfoStationsCondition.setText(alboussiere.getLastTCondition());
-		textInfoStationsTendance.setText(String.format("%d",alboussiere.getTendance()));
+		textInfoStationsTendance.setText(String.format("%d", alboussiere.getTendance()));
 
 		buttonTo_ListStationActivity = (Button)findViewById(R.id.buttonTo_ListStationActivity);
 		buttonTo_ListStationActivity.setOnClickListener(new View.OnClickListener()
@@ -57,6 +55,5 @@ public class MainActivity extends Activity
 				startActivity(listStationActivity_Intent);
 			}
 		});
-
 	}
 }

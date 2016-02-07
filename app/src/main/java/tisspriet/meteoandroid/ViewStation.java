@@ -37,21 +37,15 @@ public class ViewStation extends Activity
 		stationMeasure_text = (TextView)findViewById(R.id.viewStation_measures);
 		Intent intentLauncher = getIntent();
 		String intentStationName = intentLauncher.getStringExtra("id");
-		if(intentLauncher != null)
-		{
-			stationName_text.setText(intentStationName);
-		}
-		Station alboussiere = new Station("Alboussière", "Station d'altitude du pays de Crussol",
-										  "44.9434", "4.72924", "547");
-		alboussiere.addMeasure(new Measure("2015-11-27 18:45:57", 18, "Nuageux"));
-		alboussiere.addMeasure(new Measure("2015-11-27 18:46:57", 19, "Nuageux"));
-		alboussiere.addMeasure(new Measure("2015-11-27 18:47:57", 10, "Nuageux"));
-		stationDescription_text.setText(alboussiere.getDescription());
-		stationPosition_text.setText(alboussiere.gpsString());
-		stationMeasure_text.setText(alboussiere.getLastMeasure().toString());
+		StationDAO myDao = new StationDAO(ViewStation.this,R.raw.stations,R.raw.measures);
+		Station selectedStation = myDao.getStation(intentStationName);
+		myDao.addReleveToStation(selectedStation);
+		stationDescription_text.setText(selectedStation.getDescription());
+		stationPosition_text.setText(selectedStation.gpsString());
+		stationMeasure_text.setText(selectedStation.getLastMeasure().toString());
 
 		lastMeasuresList_view = (ListView)findViewById(R.id.lastMeasuresList);
-		ArrayList<Measure> measuresList_data = alboussiere.getAllMeasures();
+		ArrayList<Measure> measuresList_data = selectedStation.getAllMeasures();
 		List<HashMap<String, String>> measuresList_list = new ArrayList<HashMap<String, String>>();
 		HashMap<String, String> element;
 		for(int i = 0 ; i < measuresList_data.size() ; i++)

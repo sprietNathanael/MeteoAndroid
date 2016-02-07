@@ -24,7 +24,7 @@ public class Station
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.altitude = altitude;
-		measuresList = new ArrayList<>();
+		this.measuresList = new ArrayList<>();
 	}
 
 	public Station(JSONObject jsonObject)
@@ -34,6 +34,7 @@ public class Station
 		this.latitude = jsonObject.optString("latitude").toString();
 		this.longitude = jsonObject.optString("longitude").toString();
 		this.altitude = jsonObject.optString("altitude").toString();
+		this.measuresList = new ArrayList<>();
 	}
 
 	public String getLastTCondition()
