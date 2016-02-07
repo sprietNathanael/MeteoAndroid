@@ -14,6 +14,9 @@ public class MainActivity extends Activity
 	private TextView textInfoStationsDescription;
 	private TextView textInfoStationsPosition;
 	private TextView textInfoStationsMeasure;
+	private TextView textInfoStationsDate;
+	private TextView textInfoStationsCondition;
+	private TextView textInfoStationsTendance;
 
 	private Button buttonTo_ListStationActivity;
 
@@ -26,10 +29,22 @@ public class MainActivity extends Activity
 		textInfoStationsDescription = (TextView)findViewById(R.id.textInfoStationDescription);
 		textInfoStationsPosition = (TextView)findViewById(R.id.textInfoStationPosition);
 		textInfoStationsMeasure = (TextView)findViewById(R.id.textInfoStationMeasure);
-		textInfoStationsName.setText("Alboussière");
-		textInfoStationsDescription.setText("Station d'altitude du pays de Crussol");
-		textInfoStationsPosition.setText("GPS : 44.9434 N 4.72924 O 547 m");
-		textInfoStationsMeasure.setText("Date : 2015-11-27 18:47:57 -> 18°");
+		textInfoStationsDate = (TextView)findViewById(R.id.textInfoStationDate);
+		textInfoStationsCondition = (TextView)findViewById(R.id.textInfoStationCondition);
+		textInfoStationsTendance = (TextView)findViewById(R.id.textInfoStationTendance);
+
+
+		Station alboussiere = new Station("Alboussière","Station d'altitude du pays de Crussol","44.9434","4.72924","547");
+		alboussiere.addMeasure(new Measure("2015-11-27 18:45:57",18,"Nuageux"));
+		alboussiere.addMeasure(new Measure("2015-11-27 18:46:57",19,"Nuageux"));
+		alboussiere.addMeasure(new Measure("2015-11-27 18:47:57", 10, "Nuageux"));
+		textInfoStationsName.setText(alboussiere.getName());
+		textInfoStationsDescription.setText(alboussiere.getDescription());
+		textInfoStationsPosition.setText(alboussiere.gpsString());
+		textInfoStationsDate.setText(alboussiere.getLastMeasure().getDate());
+		textInfoStationsMeasure.setText(String.format("%f °C",alboussiere.getLastTemperature()));
+		textInfoStationsCondition.setText(alboussiere.getLastTCondition());
+		textInfoStationsTendance.setText(String.format("%d",alboussiere.getTendance()));
 
 		buttonTo_ListStationActivity = (Button)findViewById(R.id.buttonTo_ListStationActivity);
 		buttonTo_ListStationActivity.setOnClickListener(new View.OnClickListener()

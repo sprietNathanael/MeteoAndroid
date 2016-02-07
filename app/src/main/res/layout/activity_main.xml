@@ -17,7 +17,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <TextView
+        android:id="@+id/textInfoStationDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
         android:id="@+id/textInfoStationMeasure"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/textInfoStationCondition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/textInfoStationTendance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <Button

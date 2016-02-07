@@ -8,10 +8,10 @@ import org.json.JSONObject;
 public class Measure
 {
 	private String date;
-	private int temperature;
+	private float temperature;
 	private String condition;
 
-	public Measure(String date, int temperature, String condition)
+	public Measure(String date, float temperature, String condition)
 	{
 		this.date = date;
 		this.temperature = temperature;
@@ -21,7 +21,7 @@ public class Measure
 	public Measure(JSONObject jsonObject)
 	{
 		this.date = jsonObject.optString("quand").toString();
-		this.temperature = Integer.parseInt(jsonObject.optString("temp").toString());
+		this.temperature = Float.parseFloat(jsonObject.optString("temp").toString());
 		this.condition = jsonObject.optString("condition").toString();
 	}
 
@@ -30,7 +30,7 @@ public class Measure
 		return date;
 	}
 
-	public int getTemperature()
+	public float getTemperature()
 	{
 		return temperature;
 	}

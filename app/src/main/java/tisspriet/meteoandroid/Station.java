@@ -9,26 +9,27 @@ import java.util.ArrayList;
  */
 public class Station
 {
-	private String nom;
+	private String name;
 	private String description;
 	private String latitude;
 	private String longitude;
 	private String altitude;
 	private ArrayList<Measure> measuresList;
 
-	public Station(String nom, String description, String latitude, String longitude,
+	public Station(String name, String description, String latitude, String longitude,
 				   String altitude)
 	{
-		this.nom = nom;
+		this.name = name;
 		this.description = description;
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.altitude = altitude;
+		measuresList = new ArrayList<>();
 	}
 
 	public Station(JSONObject jsonObject)
 	{
-		this.nom = jsonObject.optString("id").toString();
+		this.name = jsonObject.optString("id").toString();
 		this.description = jsonObject.optString("libelle").toString();
 		this.latitude = jsonObject.optString("latitude").toString();
 		this.longitude = jsonObject.optString("longitude").toString();
@@ -48,8 +49,8 @@ public class Station
 	{
 		if(measuresList.size() > 1)
 		{
-			int temp1 = getLastTemperature();
-			int temp2 = measuresList.get(measuresList.size() - 2).getTemperature();
+			float temp1 = getLastTemperature();
+			float temp2 = measuresList.get(measuresList.size() - 2).getTemperature();
 			if(temp1 < temp2)
 			{
 				return 1;
@@ -68,7 +69,7 @@ public class Station
 
 	}
 
-	public int getLastTemperature()
+	public float getLastTemperature()
 	{
 		if(measuresList.size() != 0)
 		{
@@ -95,9 +96,9 @@ public class Station
 		return measuresList;
 	}
 
-	public String getNom()
+	public String getName()
 	{
-		return nom;
+		return name;
 	}
 
 	public String getDescription()

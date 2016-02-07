@@ -16,6 +16,7 @@ import android.widget.TwoLineListItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -31,17 +32,23 @@ public class ListStation extends Activity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.liststation_layout);
 		stationList_view = (ListView)findViewById(R.id.stationList);
-		String[][] stationList_data = new String[][]{
-				{"Alboussière", "Station d'altitude du pays de Crussol"},
-				{"Montélimar", "Station du vrai début du Sud"}};
+		Station alboussiere = new Station("Alboussière","Station d'altitude du pays de Crussol","44.9434","4.72924","547");
+		Station montelimar = new Station("Montélimar","Station du vrai début du Sud","44.5569","4.7495","86");
+		HashMap<String,Station> stationList_data = new HashMap<>();
+		stationList_data.put(alboussiere.getName(),alboussiere);
+		stationList_data.put(montelimar.getName(),montelimar);
 		List<HashMap<String, String>> stationList_list = new ArrayList<HashMap<String, String>>();
 		HashMap<String, String> element;
-		for(int i = 0 ; i < stationList_data.length ; i++)
+		Iterator it = stationList_data.entrySet().iterator();
+		while(it.hasNext())
 		{
 			element = new HashMap<String, String>();
-			element.put("id", stationList_data[i][0]);
-			element.put("description", stationList_data[i][1]);
+			HashMap.Entry pair = (HashMap.Entry)it.next();
+			Station currentStation = (Station) pair.getValue();
+			element.put("id", currentStation.getName());
+			element.put("description", currentStation.getDescription());
 			stationList_list.add(element);
+			it.remove();
 		}
 		ListAdapter stationList_adapter = new SimpleAdapter(this, stationList_list,
 															android.R.layout.simple_list_item_2,

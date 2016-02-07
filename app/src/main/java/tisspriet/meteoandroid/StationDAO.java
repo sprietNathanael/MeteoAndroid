@@ -1,7 +1,5 @@
 package tisspriet.meteoandroid;
 
-import android.widget.Toast;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,6 +54,43 @@ public class StationDAO
 		return stationList;
 	}
 
+	public Station getStationList(String stationSearch)
+	{
+		Station myStation = null;
+		String buffer;
+		try {
+			// FileReader reads text files  in the default encoding.
+			FileReader sourceReader = new FileReader("station.txt");
+
+			// Always wrap FileReader in BufferedReader.
+			BufferedReader bufferedReader = new BufferedReader(sourceReader);
+			buffer = bufferedReader.readLine();
+
+			bufferedReader.close();
+			JSONArray stationJson = new JSONArray(buffer);
+			for(int i=0; i < stationJson.length(); i++){
+				JSONObject jsonObject = stationJson.getJSONObject(i);
+				if(jsonObject.optString("id").toString().compareTo(stationSearch) == 0)
+				{
+					myStation = new Station(jsonObject);
+				}
+			}
+		}
+		catch(FileNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
+		catch(JSONException e)
+		{
+			e.printStackTrace();
+		}
+		return myStation;
+	}
+
 	public Station addReleveToStation(Station myStation)
 	{
 		String buffer;
@@ -71,7 +106,7 @@ public class StationDAO
 			JSONArray stationJson = new JSONArray(buffer);
 			for(int i=0; i < stationJson.length(); i++){
 				JSONObject jsonObject = stationJson.getJSONObject(i);
-				if(jsonObject.optString("station").toString().compareTo(myStation.getNom()) == 0)
+				if(jsonObject.optString("station").toString().compareTo(myStation.getName()) == 0)
 				{
 					myStation.addMeasure(new Measure(jsonObject));
 				}
