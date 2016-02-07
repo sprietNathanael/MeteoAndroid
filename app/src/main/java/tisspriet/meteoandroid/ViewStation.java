@@ -3,13 +3,10 @@ package tisspriet.meteoandroid;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,6 +37,7 @@ public class ViewStation extends Activity
 		StationDAO myDao = new StationDAO(ViewStation.this,R.raw.stations,R.raw.measures);
 		Station selectedStation = myDao.getStation(intentStationName);
 		myDao.addReleveToStation(selectedStation);
+		stationName_text.setText(intentStationName);
 		stationDescription_text.setText(selectedStation.getDescription());
 		stationPosition_text.setText(selectedStation.gpsString());
 		stationMeasure_text.setText(selectedStation.getLastMeasure().toString());
@@ -58,7 +56,7 @@ public class ViewStation extends Activity
 			measuresList_list.add(element);
 		}
 		ListAdapter measuresList_adapter = new SimpleAdapter(this, measuresList_list,
-															 R.layout.station_listitem,
+															 R.layout.measure_listitem,
 															 new String[]{"date", "temperature",
 																		  "condition"},
 															 new int[]{R.id.date, R.id.temperature,

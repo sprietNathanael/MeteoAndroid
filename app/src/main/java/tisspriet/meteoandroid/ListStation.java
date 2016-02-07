@@ -22,6 +22,7 @@ import java.util.List;
 /**
  * Created by nathanael on 06/02/16.
  */
+
 public class ListStation extends Activity
 {
 	private ListView stationList_view;
@@ -44,29 +45,21 @@ public class ListStation extends Activity
 			Station currentStation = (Station)pair.getValue();
 			element.put("id", currentStation.getName());
 			element.put("description", currentStation.getDescription());
+			if(currentStation.getName().compareTo("Alboussière") == 0)
+			{
+				element.put("fav", "true");
+			}
+			else
+			{
+				element.put("fav","false");
+			}
 			stationList_list.add(element);
 			it.remove();
 		}
-		ListAdapter stationList_adapter = new SimpleAdapter(this, stationList_list,
-															android.R.layout.simple_list_item_2,
-															new String[]{"id", "description"},
-															new int[]{android.R.id.text1,
-																	  android.R.id.text2});
+		StationItemAdapter stationList_adapter = new StationItemAdapter(this, stationList_list);
+
 		stationList_view.setAdapter(stationList_adapter);
-		stationList_view.setOnItemClickListener(new AdapterView.OnItemClickListener()
-		{
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-			{
-				TwoLineListItem itemView = (TwoLineListItem)view;
-				TextView itemViewName = (TextView)itemView.getChildAt(0);
-				Intent viewStationActivity_Intent = new Intent(ListStation.this, ViewStation
-						.class);
-				viewStationActivity_Intent.putExtra("id", itemViewName.getText().toString());
 
-				startActivity(viewStationActivity_Intent);
 
-			}
-		});
 	}
 }
