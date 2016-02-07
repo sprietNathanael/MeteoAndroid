@@ -1,5 +1,7 @@
 package tisspriet.meteoandroid;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 /**
@@ -22,6 +24,15 @@ public class Station
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.altitude = altitude;
+	}
+
+	public Station(JSONObject jsonObject)
+	{
+		this.nom = jsonObject.optString("id").toString();
+		this.description = jsonObject.optString("libelle").toString();
+		this.latitude = jsonObject.optString("latitude").toString();
+		this.longitude = jsonObject.optString("longitude").toString();
+		this.altitude = jsonObject.optString("altitude").toString();
 	}
 
 	public String getLastTCondition()

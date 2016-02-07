@@ -1,0 +1,1 @@
+[{"id":"Alboussi\u00e8re","libelle":"Station d'altitude du pays de Crussol","latitude":"44.9434","longitude":"4.72924","altitude":"547"},{"id":"Mont\u00e9limar","libelle":"Station du vrai d\u00e9but du Sud","latitude":"44.5569","longitude":"4.7495","altitude":"86"}]
