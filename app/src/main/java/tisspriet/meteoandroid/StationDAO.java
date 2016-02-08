@@ -15,6 +15,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -29,7 +32,8 @@ public class StationDAO
 
 	private StationDAO()
 	{}
-	public static void makeDAO(Context newContext,int pathToStationFile, int pathToMeasuresFile)
+
+	public static void makeDAO(Context newContext, int pathToStationFile, int pathToMeasuresFile)
 	{
 		context = newContext;
 		stationPath = pathToStationFile;
@@ -37,8 +41,49 @@ public class StationDAO
 		String path = context.getFilesDir().getAbsolutePath() + File.separator + "station.json";
 		File file = new File(path);
 		stationList = new HashMap<>();
+		String datePath = context.getFilesDir().getAbsolutePath() + File.separator + "lastupdate.date";
+		File dateFile = new File(datePath);
+		boolean tooOld = true;
+		if(dateFile.isFile())
+		{
+			String buffer;
+			try
+			{
+				InputStream sourceReader = new FileInputStream(dateFile);
 
-		if(file.exists())
+				// Always wrap FileReader in BufferedReader.
+				BufferedReader bufferedReader = new BufferedReader(
+						new InputStreamReader(sourceReader));
+				buffer = bufferedReader.readLine();
+
+				sourceReader.close();
+				try
+				{
+					Date oldDate = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).parse(
+							buffer);
+					Date curDate = new Date();
+					float difference = ((float)((curDate.getTime() / (24 * 60 * 60 * 1000)) -
+							(float)(oldDate.getTime() / (24 * 60 * 60 * 1000))));
+					tooOld = difference > 1.0;
+				}
+				catch(ParseException e)
+				{
+					e.printStackTrace();
+				}
+				bufferedReader.close();
+
+			}
+			catch(FileNotFoundException e)
+			{
+				e.printStackTrace();
+			}
+			catch(IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+
+		if(file.isFile() && !tooOld)
 		{
 			String buffer;
 			try
@@ -76,20 +121,27 @@ public class StationDAO
 		}
 		else
 		{
+			Log.d("Mise à jour stations","test");
 			String buffer;
 			try
 			{
 				InputStream sourceReader = context.getResources().openRawResource(stationPath);
 				PrintWriter cacheWriter = new PrintWriter(path);
+				PrintWriter cacheDateWriter = new PrintWriter(datePath);
 
 				// Always wrap FileReader in BufferedReader.
 				BufferedReader bufferedReader = new BufferedReader(
 						new InputStreamReader(sourceReader));
 				buffer = bufferedReader.readLine();
+
 				cacheWriter.print(buffer);
-
-
+				String buffer2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+				cacheDateWriter.print(buffer2);
+				sourceReader.close();
+				cacheWriter.close();
+				cacheDateWriter.close();
 				bufferedReader.close();
+
 				JSONArray stationJson = new JSONArray(buffer);
 				for(int i = 0 ; i < stationJson.length() ; i++)
 				{
@@ -97,8 +149,7 @@ public class StationDAO
 					stationList.put(jsonObject.optString("id").toString(), new Station
 							(jsonObject));
 				}
-				sourceReader.close();
-				cacheWriter.close();
+
 			}
 			catch(FileNotFoundException e)
 			{
@@ -123,7 +174,7 @@ public class StationDAO
 
 	public static Station getStation(String stationSearch)
 	{
-		Log.d("test",stationList.toString());
+		Log.d("test", stationList.toString());
 		if(stationList.containsKey(stationSearch))
 		{
 			return stationList.get(stationSearch);
