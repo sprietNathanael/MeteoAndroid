@@ -1,8 +1,18 @@
 package tisspriet.meteoandroid;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,17 +43,19 @@ public class StationDAO
 	private StationDAO()
 	{}
 
-	public static void makeDAO(Context newContext, int pathToStationFile, int pathToMeasuresFile)
+	public static void makeDAO(Context newContext, int pathToMeasuresFile)
 	{
 		context = newContext;
-		stationPath = pathToStationFile;
 		measuresPath = pathToMeasuresFile;
 		String path = context.getFilesDir().getAbsolutePath() + File.separator + "station.json";
 		File file = new File(path);
 		stationList = new HashMap<>();
-		String datePath = context.getFilesDir().getAbsolutePath() + File.separator + "lastupdate.date";
+		String datePath = context.getFilesDir().getAbsolutePath() + File.separator + "lastupdate" +
+				".date";
 		File dateFile = new File(datePath);
 		boolean tooOld = true;
+
+
 		if(dateFile.isFile())
 		{
 			String buffer;
@@ -59,8 +71,7 @@ public class StationDAO
 				sourceReader.close();
 				try
 				{
-					Date oldDate = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).parse(
-							buffer);
+					Date oldDate = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).parse(buffer);
 					Date curDate = new Date();
 					float difference = ((float)((curDate.getTime() / (24 * 60 * 60 * 1000)) -
 							(float)(oldDate.getTime() / (24 * 60 * 60 * 1000))));
@@ -121,48 +132,8 @@ public class StationDAO
 		}
 		else
 		{
-			Log.d("Mise à jour stations","test");
-			String buffer;
-			try
-			{
-				InputStream sourceReader = context.getResources().openRawResource(stationPath);
-				PrintWriter cacheWriter = new PrintWriter(path);
-				PrintWriter cacheDateWriter = new PrintWriter(datePath);
-
-				// Always wrap FileReader in BufferedReader.
-				BufferedReader bufferedReader = new BufferedReader(
-						new InputStreamReader(sourceReader));
-				buffer = bufferedReader.readLine();
-
-				cacheWriter.print(buffer);
-				String buffer2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-				cacheDateWriter.print(buffer2);
-				sourceReader.close();
-				cacheWriter.close();
-				cacheDateWriter.close();
-				bufferedReader.close();
-
-				JSONArray stationJson = new JSONArray(buffer);
-				for(int i = 0 ; i < stationJson.length() ; i++)
-				{
-					JSONObject jsonObject = stationJson.getJSONObject(i);
-					stationList.put(jsonObject.optString("id").toString(), new Station
-							(jsonObject));
-				}
-
-			}
-			catch(FileNotFoundException e)
-			{
-				e.printStackTrace();
-			}
-			catch(IOException e)
-			{
-				e.printStackTrace();
-			}
-			catch(JSONException e)
-			{
-				e.printStackTrace();
-			}
+			Log.d("Mise à jour stations", "test");
+			new DownloadStationList().execute();
 		}
 
 	}
@@ -224,5 +195,80 @@ public class StationDAO
 		return myStation;
 	}
 
+	private static class DownloadStationList extends AsyncTask
+	{
+		@Override
+		protected Object doInBackground(Object[] params)
+		{
+			Log.d("test", "débute");
+			HttpGet httpGet = new HttpGet(
+					"http://intranet.iut-valence.fr/~sprietn/php/TP4/index.php?getStationList=");
+			HttpParams httpParameters = new BasicHttpParams();
+			int timeoutConnection = 3000;
+			HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
+			int timeoutSocket = 5000;
+			HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
+			DefaultHttpClient httpClient = new DefaultHttpClient(httpParameters);
+			httpGet.addHeader(BasicScheme.authenticate(
+					new UsernamePasswordCredentials("sprietn", "NathAndro1"), "UTF-8", false));
+
+			HttpResponse httpResponse = null;
+			try
+			{
+				httpResponse = httpClient.execute(httpGet);
+			}
+			catch(IOException e)
+			{
+				e.printStackTrace();
+				Log.d("http", "erreur");
+			}
+			HttpEntity responseEntity = httpResponse.getEntity();
+			String buffer = "";
+			try
+			{
+				BufferedReader reader = new BufferedReader(
+						new InputStreamReader(responseEntity.getContent()));
+				buffer = reader.readLine();
+				String path = context.getFilesDir().getAbsolutePath() + File.separator +
+						"station" +
+						".json";
+				String datePath = context.getFilesDir().getAbsolutePath() + File.separator +
+						"lastupdate" +
+						".date";
+				PrintWriter cacheWriter = new PrintWriter(path);
+				PrintWriter cacheDateWriter = new PrintWriter(datePath);
+
+				cacheWriter.print(buffer);
+				String buffer2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+				cacheDateWriter.print(buffer2);
+				reader.close();
+				cacheWriter.close();
+				cacheDateWriter.close();
+
+				JSONArray stationJson = new JSONArray(buffer);
+				for(int i = 0 ; i < stationJson.length() ; i++)
+				{
+					JSONObject jsonObject = stationJson.getJSONObject(i);
+					stationList.put(jsonObject.optString("id").toString(), new Station
+							(jsonObject));
+				}
+
+			}
+			catch(FileNotFoundException e)
+			{
+				e.printStackTrace();
+			}
+			catch(IOException e)
+			{
+				e.printStackTrace();
+			}
+			catch(JSONException e)
+			{
+				e.printStackTrace();
+			}
+
+			return buffer;
+		}
+	}
 
 }

@@ -48,7 +48,7 @@ public class MainActivity extends Activity
 	protected void onResume()
 	{
 		super.onResume();
-		StationDAO.makeDAO(MainActivity.this, R.raw.stations, R.raw.measures);
+		StationDAO.makeDAO(MainActivity.this, R.raw.measures);
 		HashMap<String,Station> stationList = StationDAO.getStationList();
 		for(String i : stationList.keySet())
 		{
