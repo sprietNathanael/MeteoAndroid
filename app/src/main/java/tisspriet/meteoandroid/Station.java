@@ -89,7 +89,7 @@ public class Station
 
 	public Measure getLastMeasure()
 	{
-		Measure lastMeasure = measuresList.get(measuresList.size() - 1);
+		Measure lastMeasure = measuresList.get(0);
 		Date lastDate = null;
 		try
 		{
@@ -108,7 +108,7 @@ public class Station
 			Log.d("Mise à jour releve","test");
 			StationDAO.addReleveToStation(this);
 		}
-		return measuresList.get(measuresList.size() - 1);
+		return measuresList.get(0);
 	}
 
 	public void dumpAllMeasures()
