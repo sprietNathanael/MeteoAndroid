@@ -2,20 +2,10 @@ package tisspriet.meteoandroid;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.v7.internal.view.menu.MenuView;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.TwoLineListItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,14 +27,14 @@ public class ListStation extends Activity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.liststation_layout);
 		stationList_view = (ListView)findViewById(R.id.stationList);
-		StationDAO myDao = new StationDAO(ListStation.this, R.raw.stations, R.raw.measures);
-		HashMap<String, Station> stationList_data = myDao.getStationList();
+
+		HashMap<String, Station> stationList_data = StationDAO.getStationList();
 		List<HashMap<String, String>> stationList_list = new ArrayList<HashMap<String, String>>();
 		HashMap<String, String> element;
 		Iterator it = stationList_data.entrySet().iterator();
 		SharedPreferences preferences = null;
 		preferences = ListStation.this.getSharedPreferences("favStationList",
-												   Context.MODE_WORLD_WRITEABLE);
+															Context.MODE_WORLD_WRITEABLE);
 		HashSet<String> favSet = new HashSet<>();
 		favSet = (HashSet)preferences.getStringSet("fav", new HashSet<String>());
 		while(it.hasNext())
@@ -63,10 +53,9 @@ public class ListStation extends Activity
 				element.put("fav", "false");
 			}
 			stationList_list.add(element);
-			it.remove();
+			//it.remove();
 		}
 		StationItemAdapter stationList_adapter = new StationItemAdapter(this, stationList_list);
-
 		stationList_view.setAdapter(stationList_adapter);
 
 

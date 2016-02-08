@@ -45,6 +45,7 @@ public class Station
 		}
 		return null;
 	}
+
 	public int getTendance()
 	{
 		if(measuresList.size() > 1)
@@ -110,4 +111,5 @@ public class Station
 	{
 		return latitude + " N " + longitude + " E " + altitude + " m";
 	}
+
 }

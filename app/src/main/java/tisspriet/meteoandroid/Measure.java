@@ -1,5 +1,7 @@
 package tisspriet.meteoandroid;
 
+import android.os.Parcel;
+
 import org.json.JSONObject;
 
 /**
@@ -25,6 +27,7 @@ public class Measure
 		this.condition = jsonObject.optString("condition").toString();
 	}
 
+
 	public String getDate()
 	{
 		return date;
@@ -40,9 +43,5 @@ public class Measure
 		return condition;
 	}
 
-	@Override
-	public String toString()
-	{
-		return date + " : "+ temperature +"°C "+ condition;
-	}
+
 }

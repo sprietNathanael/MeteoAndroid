@@ -34,9 +34,7 @@ public class ViewStation extends Activity
 		stationMeasure_text = (TextView)findViewById(R.id.viewStation_measures);
 		Intent intentLauncher = getIntent();
 		String intentStationName = intentLauncher.getStringExtra("id");
-		StationDAO myDao = new StationDAO(ViewStation.this,R.raw.stations,R.raw.measures);
-		Station selectedStation = myDao.getStation(intentStationName);
-		myDao.addReleveToStation(selectedStation);
+		Station selectedStation = StationDAO.getStation(intentStationName);
 		stationName_text.setText(intentStationName);
 		stationDescription_text.setText(selectedStation.getDescription());
 		stationPosition_text.setText(selectedStation.gpsString());

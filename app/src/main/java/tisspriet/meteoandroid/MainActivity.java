@@ -5,14 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +21,6 @@ import java.util.List;
 public class MainActivity extends Activity
 {
 	private ListView favStationList;
-
 	private Button buttonTo_ListStationActivity;
 
 	@Override
@@ -51,7 +48,12 @@ public class MainActivity extends Activity
 	protected void onResume()
 	{
 		super.onResume();
-		StationDAO myDao = new StationDAO(MainActivity.this, R.raw.stations, R.raw.measures);
+		StationDAO.makeDAO(MainActivity.this, R.raw.stations, R.raw.measures);
+		HashMap<String,Station> stationList = StationDAO.getStationList();
+		for(String i : stationList.keySet())
+		{
+			StationDAO.addReleveToStation(MainActivity.this,stationList.get(i));
+		}
 		SharedPreferences preferences = null;
 		preferences = MainActivity.this.getSharedPreferences("favStationList", Context.MODE_WORLD_WRITEABLE);
 		Log.d("Preferences",
@@ -61,13 +63,12 @@ public class MainActivity extends Activity
 		ArrayList<Station> favStation_data = new ArrayList<>();
 		for(String i : favSet)
 		{
-			favStation_data.add(myDao.getStation(i));
+			favStation_data.add(StationDAO.getStation(i));
 		}
 		List<HashMap<String, String>> favStation_list = new ArrayList<HashMap<String, String>>();
 		HashMap<String, String> element;
 		for(int i = 0 ; i < favStation_data.size() ; i++)
 		{
-			myDao.addReleveToStation(favStation_data.get(i));
 			element = new HashMap<String, String>();
 			element.put("name", favStation_data.get(i).getName());
 			element.put("description", favStation_data.get(i).getDescription());
