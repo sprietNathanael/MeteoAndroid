@@ -2,7 +2,11 @@ package tisspriet.meteoandroid;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.Image;
+import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +19,12 @@ import android.widget.TextView;
 import android.widget.TwoLineListItem;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by nathanael on 07/02/16.
@@ -102,16 +110,31 @@ public class StationItemAdapter extends BaseAdapter implements ListAdapter
 			@Override
 			public void onClick(View v)
 			{
+				SharedPreferences preferences = null;
+				preferences = context.getSharedPreferences("favStationList",
+														   Context.MODE_WORLD_WRITEABLE);
+				SharedPreferences.Editor editor = preferences.edit();
+				HashSet<String> favSet = new HashSet<>();
+				favSet = (HashSet)preferences.getStringSet("fav", new HashSet<String>());
+
+				Log.d("Preferences",((HashSet)preferences.getStringSet("fav",new HashSet<String>())).toString());
+
 				if(fav2)
 				{
+					favSet.remove(list.get(position).get("id").toString());
 					favButton.setImageDrawable(context.getResources().getDrawable(R.drawable.favstar_off));
 					fav2 = false;
 				}
 				else
 				{
+					favSet.add(list.get(position).get("id").toString());
 					favButton.setImageDrawable(context.getResources().getDrawable(R.drawable.favstar_on));
 					fav2 = true;
 				}
+				editor.remove("fav");
+				editor.commit();
+				editor.putStringSet("fav", favSet);
+				editor.commit();
 			}
 		});
 		return view;

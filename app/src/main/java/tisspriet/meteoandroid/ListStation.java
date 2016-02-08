@@ -1,8 +1,11 @@
 package tisspriet.meteoandroid;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.internal.view.menu.MenuView;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +19,7 @@ import android.widget.TwoLineListItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -38,6 +42,11 @@ public class ListStation extends Activity
 		List<HashMap<String, String>> stationList_list = new ArrayList<HashMap<String, String>>();
 		HashMap<String, String> element;
 		Iterator it = stationList_data.entrySet().iterator();
+		SharedPreferences preferences = null;
+		preferences = ListStation.this.getSharedPreferences("favStationList",
+												   Context.MODE_WORLD_WRITEABLE);
+		HashSet<String> favSet = new HashSet<>();
+		favSet = (HashSet)preferences.getStringSet("fav", new HashSet<String>());
 		while(it.hasNext())
 		{
 			element = new HashMap<String, String>();
@@ -45,13 +54,13 @@ public class ListStation extends Activity
 			Station currentStation = (Station)pair.getValue();
 			element.put("id", currentStation.getName());
 			element.put("description", currentStation.getDescription());
-			if(currentStation.getName().compareTo("Alboussière") == 0)
+			if(favSet.contains(currentStation.getName()))
 			{
 				element.put("fav", "true");
 			}
 			else
 			{
-				element.put("fav","false");
+				element.put("fav", "false");
 			}
 			stationList_list.add(element);
 			it.remove();

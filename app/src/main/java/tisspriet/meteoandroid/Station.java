@@ -37,7 +37,7 @@ public class Station
 		this.measuresList = new ArrayList<>();
 	}
 
-	public String getLastTCondition()
+	public String getLastCondition()
 	{
 		if(measuresList.size() > 0)
 		{
@@ -45,7 +45,6 @@ public class Station
 		}
 		return null;
 	}
-
 	public int getTendance()
 	{
 		if(measuresList.size() > 1)
