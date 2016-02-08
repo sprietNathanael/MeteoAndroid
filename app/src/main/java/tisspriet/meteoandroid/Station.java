@@ -1,8 +1,13 @@
 package tisspriet.meteoandroid;
 
+import android.util.Log;
+
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by nathanael on 07/02/16.
@@ -84,7 +89,31 @@ public class Station
 
 	public Measure getLastMeasure()
 	{
+		Measure lastMeasure = measuresList.get(measuresList.size() - 1);
+		Date lastDate = null;
+		try
+		{
+			lastDate = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).parse(
+					lastMeasure.getDate().toString());
+		}
+		catch(ParseException e)
+		{
+			e.printStackTrace();
+		}
+		Date curDate = new Date();
+		float difference = ((float)((curDate.getTime() / (60 * 60 * 1000)) - (float)(lastDate
+				.getTime() / (60 * 60 * 1000))));
+		if(difference > 1.0)
+		{
+			Log.d("Mise à jour releve","test");
+			StationDAO.addReleveToStation(this);
+		}
 		return measuresList.get(measuresList.size() - 1);
+	}
+
+	public void dumpAllMeasures()
+	{
+		measuresList.clear();
 	}
 
 	public void addMeasure(Measure mesureToAdd)

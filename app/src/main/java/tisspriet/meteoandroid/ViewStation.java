@@ -20,7 +20,6 @@ public class ViewStation extends Activity
 	private TextView stationName_text;
 	private TextView stationDescription_text;
 	private TextView stationPosition_text;
-	private TextView stationMeasure_text;
 	private ListView lastMeasuresList_view;
 
 	@Override
@@ -31,14 +30,12 @@ public class ViewStation extends Activity
 		stationName_text = (TextView)findViewById(R.id.viewStation_name);
 		stationDescription_text = (TextView)findViewById(R.id.viewStation_description);
 		stationPosition_text = (TextView)findViewById(R.id.viewStation_position);
-		stationMeasure_text = (TextView)findViewById(R.id.viewStation_measures);
 		Intent intentLauncher = getIntent();
 		String intentStationName = intentLauncher.getStringExtra("id");
 		Station selectedStation = StationDAO.getStation(intentStationName);
 		stationName_text.setText(intentStationName);
 		stationDescription_text.setText(selectedStation.getDescription());
 		stationPosition_text.setText(selectedStation.gpsString());
-		stationMeasure_text.setText(selectedStation.getLastMeasure().toString());
 
 		lastMeasuresList_view = (ListView)findViewById(R.id.lastMeasuresList);
 		ArrayList<Measure> measuresList_data = selectedStation.getAllMeasures();

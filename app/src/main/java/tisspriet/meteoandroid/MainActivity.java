@@ -52,7 +52,7 @@ public class MainActivity extends Activity
 		HashMap<String,Station> stationList = StationDAO.getStationList();
 		for(String i : stationList.keySet())
 		{
-			StationDAO.addReleveToStation(MainActivity.this,stationList.get(i));
+			StationDAO.addReleveToStation(stationList.get(i));
 		}
 		SharedPreferences preferences = null;
 		preferences = MainActivity.this.getSharedPreferences("favStationList", Context.MODE_WORLD_WRITEABLE);

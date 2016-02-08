@@ -43,5 +43,4 @@ public class Measure
 		return condition;
 	}
 
-
 }

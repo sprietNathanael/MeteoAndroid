@@ -24,12 +24,14 @@ public class StationDAO
 {
 	private static int stationPath;
 	private static int measuresPath;
+	private static Context context;
 	private static HashMap<String, Station> stationList;
 
 	private StationDAO()
 	{}
-	public static void makeDAO(Context context,int pathToStationFile, int pathToMeasuresFile)
+	public static void makeDAO(Context newContext,int pathToStationFile, int pathToMeasuresFile)
 	{
+		context = newContext;
 		stationPath = pathToStationFile;
 		measuresPath = pathToMeasuresFile;
 		String path = context.getFilesDir().getAbsolutePath() + File.separator + "station.json";
@@ -132,8 +134,9 @@ public class StationDAO
 		}
 	}
 
-	public static Station addReleveToStation(Context context, Station myStation)
+	public static Station addReleveToStation(Station myStation)
 	{
+		myStation.dumpAllMeasures();
 		String buffer;
 		try
 		{
