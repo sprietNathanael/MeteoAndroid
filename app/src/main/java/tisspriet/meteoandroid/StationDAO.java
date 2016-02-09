@@ -44,15 +44,15 @@ public class StationDAO
 	public static void makeDAO(Context newContext)
 	{
 		context = newContext;
-		String path = context.getFilesDir().getAbsolutePath() + File.separator + "station.json";
-		File file = new File(path);
+		String path = context.getFilesDir().getAbsolutePath() + File.separator + context.getResources().getString(R.string.stationCacheFilename);
+		File stationFile = new File(path);
 		stationList = new HashMap<>();
-		String datePath = context.getFilesDir().getAbsolutePath() + File.separator + "lastupdate" +
-				".date";
+		String datePath = context.getFilesDir().getAbsolutePath() + File.separator + context.getResources().getString(R.string.lastupdateCacheFilename);
 		File dateFile = new File(datePath);
 		boolean tooOld = true;
 
-
+		/*Récupération de la liste des stations*/
+		/*Si il y a déjà eu une entrée dans le cache*/
 		if(dateFile.isFile())
 		{
 			String buffer;
@@ -68,7 +68,8 @@ public class StationDAO
 				sourceReader.close();
 				try
 				{
-					Date oldDate = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).parse(buffer);
+					/*Récupération de la date du cache*/
+					Date oldDate = (new SimpleDateFormat(context.getResources().getString(R.string.dateFormat))).parse(buffer);
 					Date curDate = new Date();
 					float difference = ((float)((curDate.getTime() / (24 * 60 * 60 * 1000)) -
 							(float)(oldDate.getTime() / (24 * 60 * 60 * 1000))));
@@ -90,13 +91,13 @@ public class StationDAO
 				e.printStackTrace();
 			}
 		}
-
-		if(file.isFile() && !tooOld)
+		/*Si il y a le fichier de stations dans le cache est qu'il est moins vieux d'un jour par rapport à la dernière mise à jour*/
+		if(stationFile.isFile() && !tooOld)
 		{
 			String buffer;
 			try
 			{
-				InputStream sourceReader = new FileInputStream(file);
+				InputStream sourceReader = new FileInputStream(stationFile);
 
 				// Always wrap FileReader in BufferedReader.
 				BufferedReader bufferedReader = new BufferedReader(
@@ -104,6 +105,7 @@ public class StationDAO
 				buffer = bufferedReader.readLine();
 
 				bufferedReader.close();
+				/*Récupération de la liste des stations du cache*/
 				JSONArray stationJson = new JSONArray(buffer);
 				for(int i = 0 ; i < stationJson.length() ; i++)
 				{
@@ -127,9 +129,10 @@ public class StationDAO
 				e.printStackTrace();
 			}
 		}
+		/*Si il n'y a rien dans le cache ou que le fichier est trop vieux*/
 		else
 		{
-			Log.d("Mise à jour stations", "test");
+			/*Mise à jour de la liste des stations*/
 			new DownloadStationList().execute();
 		}
 
@@ -154,19 +157,19 @@ public class StationDAO
 
 	public static Station addReleveToStation(Station myStation)
 	{
-		Log.d("Add Releve", myStation.getName());
+		/*Mise à jour des relevés d'une station*/
 		new DownloadRelevesList().execute(myStation);
 		return myStation;
 	}
 
+	/*Téléchargement de la liste des stations*/
 	private static class DownloadStationList extends AsyncTask
 	{
 		@Override
 		protected Object doInBackground(Object[] params)
 		{
-			Log.d("begin Get Station List", "a");
 			HttpGet httpGet = new HttpGet(
-					"http://intranet.iut-valence.fr/~sprietn/php/TP4/index.php?getStationList=");
+					context.getResources().getString(R.string.stationList_URL));
 			HttpParams httpParameters = new BasicHttpParams();
 			int timeoutConnection = 3000;
 			HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
@@ -174,7 +177,7 @@ public class StationDAO
 			HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
 			DefaultHttpClient httpClient = new DefaultHttpClient(httpParameters);
 			httpGet.addHeader(BasicScheme.authenticate(
-					new UsernamePasswordCredentials("sprietn", "NathAndro1"), "UTF-8", false));
+					new UsernamePasswordCredentials(context.getResources().getString(R.string.server_username), context.getResources().getString(R.string.server_password)), "UTF-8", false));
 
 			HttpResponse httpResponse = null;
 			String buffer = null;
@@ -187,16 +190,14 @@ public class StationDAO
 						new InputStreamReader(responseEntity.getContent()));
 				buffer = reader.readLine();
 				String path = context.getFilesDir().getAbsolutePath() + File.separator +
-						"station" +
-						".json";
+						context.getResources().getString(R.string.stationCacheFilename);
 				String datePath = context.getFilesDir().getAbsolutePath() + File.separator +
-						"lastupdate" +
-						".date";
+						context.getResources().getString(R.string.lastupdateCacheFilename);
 				PrintWriter cacheWriter = new PrintWriter(path);
 				PrintWriter cacheDateWriter = new PrintWriter(datePath);
 
 				cacheWriter.print(buffer);
-				String buffer2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+				String buffer2 = new SimpleDateFormat(context.getResources().getString(R.string.dateFormat)).format(new Date());
 				cacheDateWriter.print(buffer2);
 				reader.close();
 				cacheWriter.close();
@@ -206,7 +207,7 @@ public class StationDAO
 				for(int i = 0 ; i < stationJson.length() ; i++)
 				{
 					JSONObject jsonObject = stationJson.getJSONObject(i);
-					stationList.put(jsonObject.optString("id").toString(), new Station
+					stationList.put(jsonObject.optString(context.getResources().getString(R.string.station_Json_name)).toString(), new Station
 							(jsonObject));
 				}
 
@@ -223,12 +224,12 @@ public class StationDAO
 			{
 				e.printStackTrace();
 			}
-			Log.d("end Get Station", "a");
-
 			return buffer;
+
 		}
 	}
 
+	/*Téléchargement des relevé*/
 	private static class DownloadRelevesList extends AsyncTask<Station, Void, String>
 	{
 		@Override
@@ -236,7 +237,7 @@ public class StationDAO
 		{
 			Station station = stations[0];
 			HttpGet httpGet = new HttpGet(
-					"http://intranet.iut-valence.fr/~sprietn/php/TP4/afficheReleves.php?station="
+					context.getResources().getString(R.string.measures_URL)
 							+ station.getName());
 			HttpParams httpParameters = new BasicHttpParams();
 			int timeoutConnection = 3000;
@@ -245,7 +246,7 @@ public class StationDAO
 			HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
 			DefaultHttpClient httpClient = new DefaultHttpClient(httpParameters);
 			httpGet.addHeader(BasicScheme.authenticate(
-					new UsernamePasswordCredentials("sprietn", "NathAndro1"), "UTF-8", false));
+					new UsernamePasswordCredentials(context.getResources().getString(R.string.server_username), context.getResources().getString(R.string.server_password)), "UTF-8", false));
 
 			HttpResponse httpResponse = null;
 			try
@@ -255,10 +256,10 @@ public class StationDAO
 			catch(IOException e)
 			{
 				e.printStackTrace();
-				Log.d("http", "erreur");
 			}
 			HttpEntity responseEntity = httpResponse.getEntity();
 			String buffer = "";
+			/*Sauvegarde des relevés dans l'objet*/
 			try
 			{
 				station.dumpAllMeasures();
@@ -274,7 +275,6 @@ public class StationDAO
 
 					station.addMeasure(new Measure(jsonObject));
 				}
-				Log.d("end Add Releve", station.getName());
 			}
 			catch(FileNotFoundException e)
 			{

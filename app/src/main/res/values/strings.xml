@@ -1,10 +1,30 @@
 <resources>
     <string name="app_name">MeteoAndroid</string>
 
-    <string name="hello_world">Hello World!</string>
-    <string name="action_settings">Settings</string>
-
     <string name="stations_prompt">Choose a station</string>
-    <string name="textof_buttonTo_ListStationActivity">Lister les stations</string>
+    <string name="textof_buttonTo_ListStationActivity">Lister les Stations</string>
     <string name="textof_buttonTo_refreshStations">Rafraichir</string>
+    <string name="favStationList_preferencesName">favStationList</string>
+    <string name="favStationList_preferencesArrayName">fav</string>
+    <string name="station_IntentArray_name">id</string>
+    <string name="station_IntentArray_description">description</string>
+    <string name="station_IntentArray_temperature">temperature</string>
+    <string name="station_IntentArray_condition">condition</string>
+    <string name="station_IntentArray_tendance">tendance</string>
+    <string name="station_Extra_name">id</string>
+    <string name="favStationList_preferencesArray_value_true">True</string>
+    <string name="favStationList_preferencesArray_value_false">False</string>
+    <string name="station_IntentArray_fav">fav</string>
+    <string name="measure_IntentArray_date">date</string>
+    <string name="measure_IntentArray_temperature">temperature</string>
+    <string name="temperatureFormat">%3.1f °C</string>
+    <string name="measure_IntentArray_condition">condition</string>
+    <string name="stationCacheFilename">stations.json</string>
+    <string name="lastupdateCacheFilename">lastUpdate.date</string>
+    <string name="stationList_URL">http://intranet.iut-valence.fr/~sprietn/php/TP4/index.php?getStationList=</string>
+    <string name="server_username">sprietn</string>
+    <string name="server_password">NathAndro1</string>
+    <string name="dateFormat">yyyy-MM-dd HH:mm:ss</string>
+    <string name="station_Json_name">id</string>
+    <string name="measures_URL">"http://intranet.iut-valence.fr/~sprietn/php/TP4/afficheReleves.php?station=</string>
 </resources>

@@ -33,6 +33,7 @@ public class StationItemAdapter extends BaseAdapter implements ListAdapter
 		this.context = context;
 	}
 
+	/*Méthodes à implémenter obligatoirement*/
 	@Override
 	public int getCount()
 	{
@@ -52,6 +53,7 @@ public class StationItemAdapter extends BaseAdapter implements ListAdapter
 		//just return 0 if your list items do not have an Id variable.
 	}
 
+	/*Création de la vue*/
 	@Override
 	public View getView(final int position, final View convertView, ViewGroup parent)
 	{
@@ -62,16 +64,30 @@ public class StationItemAdapter extends BaseAdapter implements ListAdapter
 					Context.LAYOUT_INFLATER_SERVICE);
 			view = inflater.inflate(R.layout.station_listitem, null);
 		}
-
-		//Handle TextView and display string from your list
+		/*Chargement des éléments*/
 		TextView stationName_text = (TextView)view.findViewById(R.id.itemstation_name);
-		stationName_text.setText(list.get(position).get("id"));
+		stationName_text.setText(list.get(position).get(context.getResources().getString(R.string.station_IntentArray_name)));
+
 		TextView stationDescription_text = (TextView)view.findViewById(
 				R.id.itemstation_description);
-		stationDescription_text.setText(list.get(position).get("description"));
-		final boolean fav = Boolean.parseBoolean(list.get(position).get("fav"));
+		stationDescription_text.setText(list.get(position).get(
+				context.getResources().getString(R.string.station_IntentArray_description)));
 
-		//Handle buttons and add onClickListeners
+		/*Gestion du clic sur l'élément*/
+		LinearLayout clickable = (LinearLayout)view.findViewById(R.id.itemstation_clickable);
+		clickable.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				Intent viewStationActivity_Intent = new Intent(context, ViewStation.class);
+				viewStationActivity_Intent.putExtra(context.getResources().getString(R.string.station_Extra_name), list.get(position).get(context.getResources().getString(R.string.station_IntentArray_name)));
+				context.startActivity(viewStationActivity_Intent);
+			}
+		});
+
+		/*Gestion des favoris*/
+		final boolean fav = Boolean.parseBoolean(list.get(position).get(context.getResources().getString(R.string.station_IntentArray_fav)));
 		final ImageButton favButton = (ImageButton)view.findViewById(R.id.favButton);
 		if(fav)
 		{
@@ -81,21 +97,6 @@ public class StationItemAdapter extends BaseAdapter implements ListAdapter
 		{
 			favButton.setImageDrawable(context.getResources().getDrawable(R.drawable.favstar_off));
 		}
-
-		LinearLayout clickable = (LinearLayout)view.findViewById(R.id.itemstation_clickable);
-
-
-		clickable.setOnClickListener(new View.OnClickListener()
-		{
-			@Override
-			public void onClick(View v)
-			{
-				Intent viewStationActivity_Intent = new Intent(context, ViewStation.class);
-				viewStationActivity_Intent.putExtra("id", list.get(position).get("id"));
-				context.startActivity(viewStationActivity_Intent);
-			}
-		});
-
 		favButton.setOnClickListener(new View.OnClickListener()
 		{
 			Boolean fav2 = fav;
@@ -103,30 +104,35 @@ public class StationItemAdapter extends BaseAdapter implements ListAdapter
 			public void onClick(View v)
 			{
 				SharedPreferences preferences = null;
-				preferences = context.getSharedPreferences("favStationList",
+				/*Récupération des favoris*/
+				preferences = context.getSharedPreferences(context.getResources().getString(R.string.favStationList_preferencesName),
 														   Context.MODE_WORLD_WRITEABLE);
 				SharedPreferences.Editor editor = preferences.edit();
-				HashSet<String> favSet = new HashSet<>();
-				favSet = (HashSet)preferences.getStringSet("fav", new HashSet<String>());
-
-				Log.d("Preferences",((HashSet)preferences.getStringSet("fav",new HashSet<String>())).toString());
-
+				HashSet<String> favStation_set = new HashSet<>();
+				Log.d("Fav7",favStation_set.toString());
+				favStation_set = (HashSet)preferences.getStringSet(context.getResources().getString(R.string.favStationList_preferencesArrayName), new HashSet<String>());
+				Log.d("Fav8",favStation_set.toString());
 				if(fav2)
 				{
-					favSet.remove(list.get(position).get("id").toString());
+					favStation_set.remove(list.get(position).get(context.getResources().getString(
+							R.string.station_IntentArray_name)).toString());
 					favButton.setImageDrawable(context.getResources().getDrawable(R.drawable.favstar_off));
 					fav2 = false;
 				}
 				else
 				{
-					favSet.add(list.get(position).get("id").toString());
+					favStation_set.add(list.get(position).get(context.getResources().getString(
+							R.string.station_IntentArray_name)).toString());
 					favButton.setImageDrawable(context.getResources().getDrawable(R.drawable.favstar_on));
 					fav2 = true;
 				}
-				editor.remove("fav");
+				editor.remove(context.getResources().getString(R.string.favStationList_preferencesArrayName));
 				editor.commit();
-				editor.putStringSet("fav", favSet);
+				editor.putStringSet(context.getResources().getString(
+						R.string.favStationList_preferencesArrayName), favStation_set);
 				editor.commit();
+				favStation_set = (HashSet)preferences.getStringSet(context.getResources().getString(R.string.favStationList_preferencesArrayName), new HashSet<String>());
+				Log.d("Fav9", favStation_set.toString());
 			}
 		});
 		return view;

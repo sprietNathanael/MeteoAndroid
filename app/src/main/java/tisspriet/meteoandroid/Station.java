@@ -53,6 +53,7 @@ public class Station
 
 	public int getTendance()
 	{
+		/*Calcul de la tendance*/
 		if(measuresList.size() > 1)
 		{
 			float temp1 = getLastTemperature();
@@ -91,6 +92,7 @@ public class Station
 	{
 		if(!measuresList.isEmpty())
 		{
+			/*Vérification de la dernière date. Si différence d'une heure, récupération des relevés*/
 			Measure lastMeasure = measuresList.get(0);
 			Date lastDate = null;
 			try
@@ -107,7 +109,6 @@ public class Station
 					.getTime() / (60 * 60 * 1000))));
 			if(difference > 1.0)
 			{
-				Log.d("Mise à jour releve", "test");
 				StationDAO.addReleveToStation(this);
 			}
 			return measuresList.get(0);

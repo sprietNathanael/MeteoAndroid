@@ -28,34 +28,44 @@ public class ListStation extends Activity
 		setContentView(R.layout.liststation_layout);
 		stationList_view = (ListView)findViewById(R.id.stationList);
 
+		/*Récupération de la liste des stations*/
 		HashMap<String, Station> stationList_data = StationDAO.getStationList();
-		List<HashMap<String, String>> stationList_list = new ArrayList<HashMap<String, String>>();
+
+		List<HashMap<String, String>> station_IntentArray = new ArrayList<HashMap<String,
+				String>>();
 		HashMap<String, String> element;
 		Iterator it = stationList_data.entrySet().iterator();
+		/*Récupération des préférences*/
 		SharedPreferences preferences = null;
-		preferences = ListStation.this.getSharedPreferences("favStationList",
+		preferences = ListStation.this.getSharedPreferences(getResources().getString(R.string.favStationList_preferencesName),
 															Context.MODE_WORLD_WRITEABLE);
 		HashSet<String> favSet = new HashSet<>();
-		favSet = (HashSet)preferences.getStringSet("fav", new HashSet<String>());
+		favSet = (HashSet)preferences.getStringSet(getResources().getString(R.string.favStationList_preferencesArrayName), new HashSet<String>());
+		/*Copie des données vers le paramètre à passer*/
 		while(it.hasNext())
 		{
 			element = new HashMap<String, String>();
 			HashMap.Entry pair = (HashMap.Entry)it.next();
 			Station currentStation = (Station)pair.getValue();
-			element.put("id", currentStation.getName());
-			element.put("description", currentStation.getDescription());
+			element.put(getResources().getString(R.string.station_IntentArray_name),
+						currentStation.getName());
+			element.put(getResources().getString(R.string.station_IntentArray_description),
+						currentStation.getDescription());
 			if(favSet.contains(currentStation.getName()))
 			{
-				element.put("fav", "true");
+				element.put(getResources().getString(R.string.station_IntentArray_fav),
+							getResources().getString(R.string.favStationList_preferencesArray_value_true));
 			}
 			else
 			{
-				element.put("fav", "false");
+				element.put(getResources().getString(R.string.station_IntentArray_fav),
+							getResources().getString(R.string
+															 .favStationList_preferencesArray_value_false));
 			}
-			stationList_list.add(element);
-			//it.remove();
+			station_IntentArray.add(element);
 		}
-		StationItemAdapter stationList_adapter = new StationItemAdapter(this, stationList_list);
+		Log.d("test5", station_IntentArray.toString());
+		StationItemAdapter stationList_adapter = new StationItemAdapter(this, station_IntentArray);
 		stationList_view.setAdapter(stationList_adapter);
 
 

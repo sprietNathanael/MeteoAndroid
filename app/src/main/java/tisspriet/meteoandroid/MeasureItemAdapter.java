@@ -28,6 +28,7 @@ public class MeasureItemAdapter extends BaseAdapter implements ListAdapter
 		this.context = context;
 	}
 
+	/*Méthodes à implémenter obligatoirement*/
 	@Override
 	public int getCount()
 	{
@@ -47,6 +48,7 @@ public class MeasureItemAdapter extends BaseAdapter implements ListAdapter
 		//just return 0 if your list items do not have an Id variable.
 	}
 
+	/*Création de la vue*/
 	@Override
 	public View getView(final int position, final View convertView, ViewGroup parent)
 	{
@@ -57,15 +59,17 @@ public class MeasureItemAdapter extends BaseAdapter implements ListAdapter
 					Context.LAYOUT_INFLATER_SERVICE);
 			view = inflater.inflate(R.layout.measure_listitem, null);
 		}
-
-		//Handle TextView and display string from your list
+		/*Chargement des éléments*/
 		TextView measureItem_date = (TextView)view.findViewById(R.id.measureItem_date);
-		measureItem_date.setText(list.get(position).get("date"));
+		measureItem_date.setText(list.get(position).get(context.getResources().getString(R.string.measure_IntentArray_date)));
+
 		TextView measureItem_temperature = (TextView)view.findViewById(
 				R.id.measureItem_temperature);
-		measureItem_temperature.setText(list.get(position).get("temperature"));
+		measureItem_temperature.setText(list.get(position).get(context.getResources().getString(R.string.measure_IntentArray_temperature)));
+
 		ImageView conditionImage = (ImageView)view.findViewById(R.id.measureItem_condition);
-		switch(list.get(position).get("condition"))
+		/*Gestion de la condition*/
+		switch(list.get(position).get(context.getResources().getString(R.string.measure_IntentArray_condition)))
 		{
 			case "ensoleillé":
 				conditionImage.setImageDrawable(context.getResources().getDrawable(R.drawable

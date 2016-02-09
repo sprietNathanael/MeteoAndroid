@@ -1,7 +1,5 @@
 package tisspriet.meteoandroid;
 
-import android.os.Parcel;
-
 import org.json.JSONObject;
 
 /**

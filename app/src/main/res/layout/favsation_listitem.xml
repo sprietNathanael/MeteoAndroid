@@ -5,18 +5,18 @@
               android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/favStation_clickable"
+        android:id="@+id/favStation_viewItem_clickable"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/favStationText_name"
+            android:id="@+id/favStation_viewItem_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
         <TextView
-            android:id="@+id/favStationText_decription"
+            android:id="@+id/favStation_viewItem_decription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>
@@ -27,18 +27,18 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/favStationText_measure"
+            android:id="@+id/favStation_viewItem_measure"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
         <ImageView
-            android:id="@+id/favStation_condition"
+            android:id="@+id/favStation_viewItem_condition"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/viewnull"/>
 
         <ImageView
-            android:id="@+id/favStationText_tendance"
+            android:id="@+id/favStation_viewItem_tendance"
             android:layout_width="63dp"
             android:layout_height="68dp"
             android:src="@drawable/tempequ"/>

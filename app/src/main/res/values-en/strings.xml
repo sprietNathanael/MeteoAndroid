@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MeteoAndroid</string>
+    <string name="textof_buttonTo_ListStationActivity">List of stations</string>
+    <string name="textof_buttonTo_refreshStations">Refresh</string>
+</resources>
