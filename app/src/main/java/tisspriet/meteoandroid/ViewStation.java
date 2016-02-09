@@ -50,13 +50,8 @@ public class ViewStation extends Activity
 			element.put("condition", measuresList_data.get(i).getCondition());
 			measuresList_list.add(element);
 		}
-		ListAdapter measuresList_adapter = new SimpleAdapter(this, measuresList_list,
-															 R.layout.measure_listitem,
-															 new String[]{"date", "temperature",
-																		  "condition"},
-															 new int[]{R.id.date, R.id.temperature,
-																	   R.id.condition});
-		lastMeasuresList_view.setAdapter(measuresList_adapter);
+		MeasureItemAdapter measureList_adapter = new MeasureItemAdapter(this, measuresList_list);
+		lastMeasuresList_view.setAdapter(measureList_adapter);
 
 
 	}

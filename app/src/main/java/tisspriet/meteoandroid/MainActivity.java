@@ -96,23 +96,12 @@ public class MainActivity extends Activity
 			element.put("name", favStation_data.get(i).getName());
 			element.put("description", favStation_data.get(i).getDescription());
 			element.put("measure",
-						String.format("%f °C", favStation_data.get(i).getLastTemperature()));
+						String.format("%3.1f °C", favStation_data.get(i).getLastTemperature()));
 			element.put("condition", favStation_data.get(i).getLastCondition());
 			element.put("tendance", String.format("%d", favStation_data.get(i).getTendance()));
 			favStation_list.add(element);
 		}
-		ListAdapter favStation_adapter = new SimpleAdapter(this, favStation_list,
-														   R.layout.favsation_listitem,
-														   new String[]{"name", "description",
-																		"measure", "condition",
-																		"tendance"},
-														   new int[]{R.id.favStationText_name,
-																	 R.id
-																			 .favStationText_decription,
-																	 R.id.favStationText_measure,
-																	 R.id.favStationText_condition,
-																	 R.id
-																			 .favStationText_tendance});
-		favStationList.setAdapter(favStation_adapter);
+		FavStationItemAdapter favstationList_adapter = new FavStationItemAdapter(this, favStation_list);
+		favStationList.setAdapter(favstationList_adapter);
 	}
 }
