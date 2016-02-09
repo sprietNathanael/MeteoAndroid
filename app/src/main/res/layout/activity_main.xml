@@ -4,11 +4,24 @@
     android:layout_height="fill_parent"
     android:orientation="vertical">
 
-    <Button
-        android:id="@+id/buttonTo_ListStationActivity"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/textof_buttonTo_ListStationActivity"/>
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/buttonTo_ListStationActivity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/textof_buttonTo_ListStationActivity"/>
+
+        <Button
+            android:id="@+id/buttonTo_refreshStations"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/textof_buttonTo_refreshStations"/>
+
+    </LinearLayout>
 
     <ListView
         android:id="@+id/favStationList"

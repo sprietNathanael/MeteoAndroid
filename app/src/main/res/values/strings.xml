@@ -6,4 +6,5 @@
 
     <string name="stations_prompt">Choose a station</string>
     <string name="textof_buttonTo_ListStationActivity">Lister les stations</string>
+    <string name="textof_buttonTo_refreshStations">Rafraichir</string>
 </resources>
