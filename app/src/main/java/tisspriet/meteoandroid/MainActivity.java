@@ -22,11 +22,20 @@ public class MainActivity extends Activity
 {
 	private ListView favStationList;
 	private Button buttonTo_ListStationActivity;
+	private HashMap<String,Station> stationList;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		StationDAO.makeDAO(MainActivity.this);
+		stationList = StationDAO.getStationList();
+		while(stationList.isEmpty());
+		for(String i : stationList.keySet())
+		{
+			StationDAO.addReleveToStation(stationList.get(i));
+			while(stationList.get(i).getLastMeasure() == null);
+		}
 		setContentView(R.layout.activity_main);
 		favStationList = (ListView)findViewById(R.id.favStationList);
 
@@ -42,18 +51,13 @@ public class MainActivity extends Activity
 			}
 		});
 
+
 	}
 
 	@Override
 	protected void onResume()
 	{
 		super.onResume();
-		StationDAO.makeDAO(MainActivity.this, R.raw.measures);
-		HashMap<String,Station> stationList = StationDAO.getStationList();
-		for(String i : stationList.keySet())
-		{
-			StationDAO.addReleveToStation(stationList.get(i));
-		}
 		SharedPreferences preferences = null;
 		preferences = MainActivity.this.getSharedPreferences("favStationList", Context.MODE_WORLD_WRITEABLE);
 		Log.d("Preferences",
@@ -61,6 +65,7 @@ public class MainActivity extends Activity
 		HashSet<String> favSet = new HashSet<>();
 		favSet = (HashSet)preferences.getStringSet("fav", new HashSet<String>());
 		ArrayList<Station> favStation_data = new ArrayList<>();
+		Log.d("Need measures","now");
 		for(String i : favSet)
 		{
 			favStation_data.add(StationDAO.getStation(i));

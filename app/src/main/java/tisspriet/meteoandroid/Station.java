@@ -83,32 +83,39 @@ public class Station
 		}
 		else
 		{
-			return Integer.parseInt(null);
+			return 0;
 		}
 	}
 
 	public Measure getLastMeasure()
 	{
-		Measure lastMeasure = measuresList.get(0);
-		Date lastDate = null;
-		try
+		if(!measuresList.isEmpty())
 		{
-			lastDate = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).parse(
-					lastMeasure.getDate().toString());
+			Measure lastMeasure = measuresList.get(0);
+			Date lastDate = null;
+			try
+			{
+				lastDate = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).parse(
+						lastMeasure.getDate().toString());
+			}
+			catch(ParseException e)
+			{
+				e.printStackTrace();
+			}
+			Date curDate = new Date();
+			float difference = ((float)((curDate.getTime() / (60 * 60 * 1000)) - (float)(lastDate
+					.getTime() / (60 * 60 * 1000))));
+			if(difference > 1.0)
+			{
+				Log.d("Mise à jour releve", "test");
+				StationDAO.addReleveToStation(this);
+			}
+			return measuresList.get(0);
 		}
-		catch(ParseException e)
+		else
 		{
-			e.printStackTrace();
+			return null;
 		}
-		Date curDate = new Date();
-		float difference = ((float)((curDate.getTime() / (60 * 60 * 1000)) - (float)(lastDate
-				.getTime() / (60 * 60 * 1000))));
-		if(difference > 1.0)
-		{
-			Log.d("Mise à jour releve","test");
-			StationDAO.addReleveToStation(this);
-		}
-		return measuresList.get(0);
 	}
 
 	public void dumpAllMeasures()
