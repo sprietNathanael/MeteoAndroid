@@ -144,9 +144,18 @@ public class Station
 		return description;
 	}
 
-	public String gpsString()
+	public String getPostition()
 	{
 		return latitude + " N " + longitude + " E " + altitude + " m";
 	}
 
+	public String getLatitude()
+	{
+		return latitude;
+	}
+
+	public String getLongitude()
+	{
+		return longitude;
+	}
 }

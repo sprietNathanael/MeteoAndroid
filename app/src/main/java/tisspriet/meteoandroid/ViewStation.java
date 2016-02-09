@@ -2,7 +2,10 @@ package tisspriet.meteoandroid;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -33,11 +36,11 @@ public class ViewStation extends Activity
 		Intent intentLauncher = getIntent();
 		String intentStationName = intentLauncher.getStringExtra(getResources().getString(R.string.station_Extra_name));
 		/*récupération de la station*/
-		Station selectedStation = StationDAO.getStation(intentStationName);
+		final Station selectedStation = StationDAO.getStation(intentStationName);
 
 		stationName_text.setText(intentStationName);
 		stationDescription_text.setText(selectedStation.getDescription());
-		stationPosition_text.setText(selectedStation.gpsString());
+		stationPosition_text.setText(selectedStation.getPostition());
 
 		measuresList_view = (ListView)findViewById(R.id.measuresList);
 		ArrayList<Measure> measuresList_data = selectedStation.getAllMeasures();
@@ -56,6 +59,22 @@ public class ViewStation extends Activity
 		}
 		MeasureItemAdapter measureList_adapter = new MeasureItemAdapter(this, measures_IntentArray);
 		measuresList_view.setAdapter(measureList_adapter);
+		ImageButton mapsButton = (ImageButton)findViewById(R.id.buttonToMaps);
+		mapsButton.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				Uri gmmIntentUri = Uri.parse("geo:0,0?q="+selectedStation.getLatitude()+","+selectedStation.getLongitude()+"("+selectedStation.getName()+")");
+				Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+				mapIntent.setPackage("com.google.android.apps.maps");
+				if(mapIntent.resolveActivity(getPackageManager()) != null)
+				{
+					startActivity(mapIntent);
+				}
+			}
+		});
+
 
 
 	}
