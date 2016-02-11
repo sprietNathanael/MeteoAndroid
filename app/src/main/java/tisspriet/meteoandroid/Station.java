@@ -57,7 +57,10 @@ public class Station
 		if(measuresList.size() > 1)
 		{
 			float temp1 = getLastTemperature();
-			float temp2 = measuresList.get(measuresList.size() - 2).getTemperature();
+			float temp2 = measuresList.get(1).getTemperature();
+			Log.d("Test",String.format("%f",temp1));
+			Log.d("Test1",String.format("%f",temp2));
+
 			if(temp1 < temp2)
 			{
 				return 1;
